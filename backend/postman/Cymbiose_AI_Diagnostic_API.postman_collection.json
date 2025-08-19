@@ -1,0 +1,361 @@
+{
+  "info": {
+    "name": "Cymbiose AI - Diagnostic Support API",
+    "description": "API collection for managing AI-suggested diagnoses and therapist feedback",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "clientId",
+      "value": "550e8400-e29b-41d4-a716-446655440001",
+      "type": "string"
+    },
+    {
+      "key": "diagnosisId",
+      "value": "clp123abc456def789",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check the overall health of the API and database connection"
+          },
+          "response": []
+        },
+        {
+          "name": "API Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            },
+            "description": "Get API information and available endpoints"
+          },
+          "response": []
+        },
+        {
+          "name": "Diagnosis Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "health"]
+            },
+            "description": "Check the health of the diagnosis service specifically"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Diagnosis Management",
+      "item": [
+        {
+          "name": "Get Diagnosis by Client ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "{{clientId}}"]
+            },
+            "description": "Retrieve the latest diagnosis for a specific client"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440001",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440001"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"clp123abc456def789\",\n    \"clientId\": \"550e8400-e29b-41d4-a716-446655440001\",\n    \"diagnosisName\": \"Major Depressive Disorder\",\n    \"predictedDate\": \"2024-01-15T10:30:00.000Z\",\n    \"justification\": \"Client presents with persistent depressed mood, loss of interest in activities, sleep disturbances, and feelings of worthlessness for the past 6 weeks. PHQ-9 score of 18 indicates moderate to severe depression.\",\n    \"challengedDiagnosis\": null,\n    \"challengedJustification\": null,\n    \"updatedAt\": \"2024-01-15T14:22:33.000Z\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\"\n  },\n  \"message\": \"Diagnosis retrieved successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create New Diagnosis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnosisName\": \"Major Depressive Disorder\",\n  \"justification\": \"Client presents with persistent depressed mood, loss of interest in activities, sleep disturbances, and feelings of worthlessness for the past 6 weeks. PHQ-9 score of 18 indicates moderate to severe depression.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "{{clientId}}"]
+            },
+            "description": "Create a new diagnosis for a client (or update existing one)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Diagnosis with Challenge",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnosisName\": \"Generalized Anxiety Disorder\",\n  \"justification\": \"Excessive worry about multiple areas of life, difficulty controlling worry, restlessness, fatigue, difficulty concentrating, and sleep problems present for over 6 months. GAD-7 score of 15 indicates moderate anxiety.\",\n  \"challengedDiagnosis\": \"Adjustment Disorder with Anxiety\",\n  \"challengedJustification\": \"Client's symptoms appear to be more situational and related to recent job loss rather than chronic anxiety. Symptoms may resolve with time and support.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440002",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440002"]
+            },
+            "description": "Create a diagnosis that includes a therapist challenge to the AI suggestion"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Diagnosis by ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challengedDiagnosis\": \"Adjustment Disorder with Depressed Mood\",\n  \"challengedJustification\": \"Upon further review, the client's symptoms appear to be more situational and related to recent life stressors rather than chronic depression. The onset correlates with job loss 2 months ago.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/{{diagnosisId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "{{diagnosisId}}"]
+            },
+            "description": "Update a specific diagnosis by its ID - useful for adding therapist challenges"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Diagnosis by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/by-id/{{diagnosisId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "by-id", "{{diagnosisId}}"]
+            },
+            "description": "Retrieve a specific diagnosis by its unique ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Diagnosis History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/diagnoses/{{clientId}}/history?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "diagnoses", "{{clientId}}", "history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated diagnosis history for a specific client"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Test Scenarios",
+      "item": [
+        {
+          "name": "Test All Mock Clients",
+          "item": [
+            {
+              "name": "Client 1 - Major Depression",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440001",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440001"]
+                }
+              }
+            },
+            {
+              "name": "Client 2 - GAD with Challenge",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440002",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440002"]
+                }
+              }
+            },
+            {
+              "name": "Client 3 - PTSD",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440003",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440003"]
+                }
+              }
+            },
+            {
+              "name": "Client 4 - Bipolar II with Challenge",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440004",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440004"]
+                }
+              }
+            },
+            {
+              "name": "Client 5 - Social Anxiety",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440005",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440005"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error Testing",
+          "item": [
+            {
+              "name": "Invalid Client ID Format",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/invalid-uuid-format",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "invalid-uuid-format"]
+                },
+                "description": "Test validation error for invalid UUID format"
+              }
+            },
+            {
+              "name": "Non-existent Client",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/550e8400-e29b-41d4-a716-446655440999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "550e8400-e29b-41d4-a716-446655440999"]
+                },
+                "description": "Test 404 error for non-existent client"
+              }
+            },
+            {
+              "name": "Invalid Diagnosis Data",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"diagnosisName\": \"\",\n  \"justification\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/{{clientId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "{{clientId}}"]
+                },
+                "description": "Test validation error for empty required fields"
+              }
+            },
+            {
+              "name": "Field Too Long",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"diagnosisName\": \"a\".repeat(501),\n  \"justification\": \"Valid justification\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/diagnoses/{{clientId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "diagnoses", "{{clientId}}"]
+                },
+                "description": "Test validation error for field exceeding maximum length"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
